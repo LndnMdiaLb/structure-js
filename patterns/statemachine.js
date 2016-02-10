@@ -1,6 +1,6 @@
 (function (app) {
 
-	app.StateMachine = function StateMachine(){
+	app.BasicStateMachine = function StateMachine(){
 
 		var activeState;
 		var stateGraph={};	// 'state graph?'
