@@ -1,8 +1,6 @@
 
 (function(app) {
 
-    var utils = app.utils = app.utils || {};
-
     //////////////////////////////////////////////////////////////////
     //
     // Dispatcher as a class
@@ -11,7 +9,7 @@
     //////////////////////////////////////////////////////////////////
 
 
-    utils.MediatorFactory =  function(global){
+    app.MediatorFactory =  function(global){
 
         // %%ERROR%% this is not  working yet need to investigate
         var GLOBALCHANNELS={};
@@ -55,7 +53,7 @@
     //////////////////////////////////////////////////////////////////
 
 
-    utils.EventDispatcher =  (function(){
+    app.EventDispatcher =  (function(){
 
         // protected list of listeners
         var listeners={};
