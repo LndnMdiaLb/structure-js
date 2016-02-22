@@ -53,36 +53,37 @@
     //////////////////////////////////////////////////////////////////
 
 
-    app.EventDispatcher =  (function(){
+    utils.EventDispatcher2 = function(){
+        return (function(){
 
-        // protected list of listeners
-        var listeners={};
+            // protected list of listeners
+            var listeners={};
 
-        function EventDispatcher(){};
+            function EventDispatcher(){};
 
-        EventDispatcher.prototype.register = function(evt_name, callback) {
-            if (typeof listeners[evt_name] == 'undefined') {
-                listeners[evt_name] = [];
-            }
-            listeners[evt_name].push(callback);
-        };
-
-        EventDispatcher.prototype.unregister = function(evt_name, callback) {
-            if (typeof listeners[evt_name] != 'undefined') {
-                //Array.prototype.
-            }
-        };
-
-        EventDispatcher.prototype.emit = function(evt_name, params) {
-            if (typeof listeners[evt_name] != 'undefined') {
-                for (var i = 0, l = listeners[evt_name].length; i < l; i++) {
-                    listeners[evt_name][i].call(this, evt_name, params);
+            EventDispatcher.prototype.register = function(evt_name, callback) {
+                if (typeof listeners[evt_name] == 'undefined') {
+                    listeners[evt_name] = [];
                 }
-            }
-        };
+                listeners[evt_name].push(callback);
+            };
 
-        return EventDispatcher ;
+            EventDispatcher.prototype.unregister = function(evt_name, callback) {
+                if (typeof listeners[evt_name] != 'undefined') {
+                    //Array.prototype.
+                }
+            };
 
+            EventDispatcher.prototype.emit = function(evt_name, params) {
+                if (typeof listeners[evt_name] != 'undefined') {
+                    for (var i = 0, l = listeners[evt_name].length; i < l; i++) {
+                        listeners[evt_name][i].call(this, evt_name, params);
+                    }
+                }
+            };
+
+            return EventDispatcher ;
     })();
+    }
 
 })(window.app || (window.app = {}));
