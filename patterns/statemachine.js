@@ -29,6 +29,58 @@
 
 	}
 
+	app.StateMachine = function StateMachine(){
+		var prevState,
+			activeState,
+			nextState,
+			stateGraph={};	// 'state graph?'
+
+
+		// last to execute
+		this.prev = function(){
+			return prevState ;
+		}
+
+		this.state = function(){
+			return activeState ;
+		}
+
+		// next to execute - can be null if setState hasn't been called
+		this.next = function(){
+			return nextState ;
+		}
+
+		//
+
+		this.setState = function (state){
+			if(activeState) prevState = activeState;
+			activeState = state ;
+			nextState = activeState;
+			return this;
+		};
+
+		this.changeState = function (){
+
+			//console.log(activeState)
+			stateGraph[activeState]() ;
+			// vs function call
+			//stateGraph[activeState].call(this, args)
+			nextState=null ;
+			return this;
+		};
+
+		this.goTo=function(state){
+			this.setState(state) ;
+			return this.changeState() ;
+		}
+
+		this.addState=function(state, func){
+			stateGraph[state]=func ;
+			return this ;
+		};
+
+	}
+
 
 /*  // subclass EventDispatcher requires tight augmentation
 	app.StateMachine.prototype = Object.create(CREATVE.utils.EventDispatcher.prototype);
