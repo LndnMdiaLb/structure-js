@@ -9,81 +9,36 @@
     //////////////////////////////////////////////////////////////////
 
 
-    app.MediatorFactory =  function(global){
+    app.Mediator = (function(){
 
-        // %%ERROR%% this is not  working yet need to investigate
         var GLOBALCHANNELS={};
 
-        return (function(global){
+        function EventDispatcher(global){
 
-            // protected list of listeners
-            // if global == true the instantiated Mediator shares CHANNEL with other Meidators
-            console.log(global);
-            var CHANNELS=(!!global)? GLOBALCHANNELS : {};
+            var CHANNELS = (global)? GLOBALCHANNELS : {};
 
-            function EventDispatcher(){};
-
-            EventDispatcher.prototype.register = function(evt_name, callback) {
-                if (typeof CHANNELS[evt_name] == 'undefined') {
-                    CHANNELS[evt_name] = [];
-                }
-                CHANNELS[evt_name].push(callback);
+            this.register = function(ev, callback) {
+                if (typeof CHANNELS[ev] == 'undefined') CHANNELS[ev] = [];
+                CHANNELS[ev].push(callback);
             };
 
-            EventDispatcher.prototype.unregister = function(evt_name, callback) {
-                if (typeof CHANNELS[evt_name] != 'undefined') {
+            this.unregister = function(ev, callback) {
+                if (typeof CHANNELS[ev] != 'undefined') {
                     //Array.prototype.
                 }
             };
-
-            EventDispatcher.prototype.emit = function(evt_name, params) {
-                if (typeof CHANNELS[evt_name] != 'undefined') {
-                    for (var i = 0, l = CHANNELS[evt_name].length; i < l; i++) {
-                        CHANNELS[evt_name][i].call(this, evt_name, params);
-                    }
-                }
+            this.emit = function(ev, params) {
+                if (typeof CHANNELS[ev] != 'undefined')
+                    for (var i = 0, l = CHANNELS[ev].length; i < l; i++)
+                        CHANNELS[ev][i].call(this, ev, params);
             };
 
-            return EventDispatcher ;
+        };
 
-        })(global);
-    };
+        return EventDispatcher ;
 
-
-    //////////////////////////////////////////////////////////////////
-
-
-    utils.EventDispatcher2 = function(){
-        return (function(){
-
-            // protected list of listeners
-            var listeners={};
-
-            function EventDispatcher(){};
-
-            EventDispatcher.prototype.register = function(evt_name, callback) {
-                if (typeof listeners[evt_name] == 'undefined') {
-                    listeners[evt_name] = [];
-                }
-                listeners[evt_name].push(callback);
-            };
-
-            EventDispatcher.prototype.unregister = function(evt_name, callback) {
-                if (typeof listeners[evt_name] != 'undefined') {
-                    //Array.prototype.
-                }
-            };
-
-            EventDispatcher.prototype.emit = function(evt_name, params) {
-                if (typeof listeners[evt_name] != 'undefined') {
-                    for (var i = 0, l = listeners[evt_name].length; i < l; i++) {
-                        listeners[evt_name][i].call(this, evt_name, params);
-                    }
-                }
-            };
-
-            return EventDispatcher ;
     })();
-    }
+
+
 
 })(window.app || (window.app = {}));
