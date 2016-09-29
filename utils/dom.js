@@ -1,39 +1,62 @@
 (function(app) {
 
+  // dependency : collection.js
+
   var utils = app.utils = app.utils || {};
 
-  /* accepts array */
-  utils.addClass= function(domElement,value){
-      var bt = this;
-      function add(el,i,arr){
-        if(!bt.hasClass(el, value)) el.className += el.className ? ' '+value : value;
-      }
-      (domElement instanceof Array)?
-        domElement.forEach(add):add(domElement);
-  };
+
+  //////////////////////////////////////////////////////////////////////////////////////////
+  // UTILISING A CLASS MAP FOR MEMORY (RESETS IN BANNERS)
+  //////////////////////////////////////////////////////////////////////////////////////////
+
+
 
   /* accepts array */
-  utils.removeClass= function(domElement,value){
+  utils.addClass= function(domEl,value){
+      var has = this.hasClass ;
+      function add(el){
+        if(has(el, value)) return ;
+        el.className += el.className ? ' ' + value : value ;
+        // utility to keep track of class manipulation ( ex. banner reset )
+        (utils.classMap || (utils.classMap = new app.Map)) && utils.classMap.add(value, el) ;        
+      }
+      (domEl instanceof Array)?
+        domEl.forEach(add) :
+        add(domEl) ;
+  };
+
+
+
+  /* accepts array */
+  utils.removeClass= function(domEl,value){
       var bt = this;
       function remove(el,i,arr){
-        var rep = el.className.match(' '+value) ? ' '+value : value;
-        el.className = el.className.replace(rep,'');
+        var rep = el.className.match(' '+value) ? ' '+value : value ;
+        el.className = el.className.replace(rep,'') ;
+        // utility to keep track of class manipulation ( ex. banner reset )
+        utils.classMap && utils.classMap.remove(value, el) ;             
       }
-      (domElement instanceof Array)?
-        domElement.forEach(remove):remove(domElement);
+      (domEl instanceof Array)?
+        domEl.forEach(remove) :
+        remove(domEl) ;
   };
 
-  utils.hasClass= function(domElement,value){
+
+
+  utils.hasClass= function(domEl,value){
       var found = false;
-      var temparray = domElement.className.split(' ');
+      var temparray = domEl.className.split(' ');
       for(var i=0;i<temparray.length;i++){
         if(temparray[i]==value){
-          found = true;
+          found = true ;
         }
       }
       return found;
   };
 
+
+
+  //////////////////////////////////////////////////////////////////////////////////////////
 
   /* CSS RELATED */
 

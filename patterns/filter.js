@@ -22,17 +22,16 @@
 
         var conditionID,
             conditionGraph = {},
-            interupt=false;
+            interupt=false ;
 
 
         function isnot(id){
-            //   **MEMOIZATION**
             return (conditionID == id) ? false :
                 !!(conditionID = id) || true ; // set id and return true
         }
 
         function runfilter(args){
-            var args = typeof args !='undefined'? args:null;
+            var args = typeof args !='undefined'? args : null;
             // assume default will run
             runfilter._default = true;
             for (var cond in conditionGraph){
@@ -64,20 +63,22 @@
 
         this.addCondition=function(id, ConditionObj){
             conditionGraph[id]=ConditionObj ;
-            return this; // can be cahined    .unblock('id1').block('id2').run(inputdata)
+            return this; // can be chained
         };
+
+        ////
 
         // block condition from being available
         this.block = function(id){
             conditionGraph[id].block=true;
-            return this; / can be cahined    .unblock('id1').block('id2').run(inputdata)
+            return this; // can be chained  .block('id1').block('id2').run(inputdata)
         }
 
         // unblock block AND remove from conditionID
         this.unblock = function(id){
             if(conditionID === id) conditionID = "";
             delete conditionGraph[id].block;
-            return this; // can be cahined    .unblock('id1').block('id2').run(inputdata)
+            return this; // can be chained   .unblock('id1').block('id2').run(inputdata)
         }
 
         // emidiately check one conditional in conditionGraph
@@ -92,7 +93,7 @@
             // run condition and reset conditionID if met
             if(c.condition && c.condition.call(this, args) && isnot(id)) c.action.call(this, args) ;
             // if it's default
-            if(!c.condition !! id=='default') runfilter(args);
+            if(!c.condition || id=='default') runfilter(args);
             // uninterupt runfi. lter();
             interupt = false;
         }

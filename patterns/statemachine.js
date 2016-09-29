@@ -1,5 +1,7 @@
 (function (app) {
 
+
+
 	app.BasicStateMachine = function StateMachine(){
 
 		var activeState;
@@ -29,56 +31,60 @@
 
 	}
 
+
+
 	app.StateMachine = function StateMachine(){
-		var prevState,
-			activeState,
-			nextState,
+
+		var prevState, // the state that previously executed
+			activeState, // the state that just execited / is executing / active
+			nextState, // the next queued state to execute
+
 			stateGraph={};	// 'state graph?'
 
 
-		// last to execute
-		this.prev = function(){
-			return prevState ;
+		// last to execute - can be null if changeState hasn't been called
+		this.prev = function(){ return prevState ; }
+
+		this.state = function(){ return activeState ; }
+
+		// next to execute - can be null if changeState hasn't been called
+		this.next = function(){ return nextState ; }
+
+
+		this.setNextState = function(state){
+			nextState = state;
+			return this;
 		}
 
-		this.state = function(){
-			return activeState ;
-		}
+		this.changeState = function (args){
 
-		// next to execute - can be null if setState hasn't been called
-		this.next = function(){
-			return nextState ;
-		}
-
-		//
-
-		this.setState = function (state){
+			// if a state has just executed store as previous
 			if(activeState) prevState = activeState;
-			activeState = state ;
-			nextState = activeState;
-			return this;
-		};
+			// ready next state to be executed and store as active
+			if(nextState) activeState = nextState;
+			// empty next state
+			nextState = null ;
+			
+			//////////////
+			// EXECUTE
+			//////////////
+			if(!activeState) return this // thow error ??
 
-		this.changeState = function (){
-
-			//console.log(activeState)
-			stateGraph[activeState]() ;
-			// vs function call
-			//stateGraph[activeState].call(this, args)
-			nextState=null ;
+			//stateGraph[activeState]()  // this == stateGraph
+			stateGraph[activeState].apply(this, args?args:[]) ; // this == StateMachine 
+			
 			return this;
-		};
+
+		}
 
 		this.goTo=function(state){
-			this.setState(state) ;
-			return this.changeState() ;
+			return this.setNextState(state).changeState() ;
 		}
 
 		this.addState=function(state, func){
 			stateGraph[state]=func ;
 			return this ;
-		};
-
+		}
 	}
 
 
@@ -102,7 +108,7 @@
 			});
 
 		sm.changeState();
-		this.goTo('XXXX');
+		sm.goTo('XXXX');
 */
 
-})(window.app || (window.app ={})) ;
+})(window.app || (window.app = {})) ;

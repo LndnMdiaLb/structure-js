@@ -100,6 +100,7 @@
 	// decorator pattern ( decorate an array insatnce)
 	// must use Decorator pattern to subclass
 
+
 	// Set or Collection ?
 	var Set = app.Set = function Set(){
 		var _stack =[] ;
