@@ -121,16 +121,37 @@
 	// Map , Lookup Table or AssociativeMap ?
 	var Map = app.Map = function Map(){
 	    var map={} ;
-	    map.add = function(id, obj) {
-	    	if(id == 'add' || 'remove') ;// ad throw error thingy 'RESEVED'
-	    	( map[id] || ( map[id] = new Set ) ) && map[id].add(obj) ;
-	        return this;
-	    }
-	    map.remove = function(id, obj) {
-			if (map.hasOwnProperty(id)) map[id].remove(obj) ;
-			if(!map[id].length) delete map[id] ;
-			return this;
-	    }
+	    Object.defineProperties(map, {
+	    	'add':{
+	    		value:function(id, obj) {
+			    	if(id == 'add' || 'remove') ;// ad throw error thingy 'RESEVED'
+			    	( map[id] || ( map[id] = new Set ) ) && map[id].add(obj) ;
+			        return this;
+			    }
+			    , writable: false			    
+			    , enumerable:false
+	    	},
+	    	'remove':{
+	    		value:function(id, obj) {
+					if (map.hasOwnProperty(id)) map[id].remove(obj) ;
+					if(!map[id].length) delete map[id] ;
+					return this;
+			    }
+			    , writable: false
+			    , enumerable:false
+	    	}
+	    })
+
+	  //   map.add = function(id, obj) {
+	  //   	if(id == 'add' || 'remove') ;// ad throw error thingy 'RESEVED'
+	  //   	( map[id] || ( map[id] = new Set ) ) && map[id].add(obj) ;
+	  //       return this;
+	  //   }
+	  //   map.remove = function(id, obj) {
+			// if (map.hasOwnProperty(id)) map[id].remove(obj) ;
+			// if(!map[id].length) delete map[id] ;
+			// return this;
+	  //   }
 	    return map ;
 	};
 
