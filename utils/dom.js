@@ -1,8 +1,10 @@
-(function(app) {
-
   // dependency : collection.js
 
+(function(app) {
+
+
   var utils = app.utils = app.utils || {};
+
 
 
   //////////////////////////////////////////////////////////////////////////////////////////
@@ -25,8 +27,6 @@
         add(domEl) ;
   };
 
-
-
   /* accepts array */
   utils.removeClass= function(domEl,value){
       var bt = this;
@@ -36,12 +36,10 @@
         // utility to keep track of class manipulation ( ex. banner reset )
         utils.classMap && utils.classMap.remove(value, el) ;             
       }
-      (domEl instanceof Array)?
+      (domEl instanceof Array) ?
         domEl.forEach(remove) :
         remove(domEl) ;
   };
-
-
 
   utils.hasClass= function(domEl,value){
       var found = false;
@@ -54,9 +52,21 @@
       return found;
   };
 
+  ///////////////
+
+  utils.reset = function(value){
+    if(!value) {
+      // using utils.removeClass on classMap directly causes errors because it is edited internally by utils.removeClass
+      // to mask unintended results copy is passed to iterate over      
+      for (v in app.utils.classMap) app.utils.removeClass(app.utils.classMap[v].concat(), v) ;        
+    } else {
+        if(app.utils.classMap[value]) app.utils.removeClass(app.utils.classMap[value].concat(), value) ;
+    }
+  };
 
 
   //////////////////////////////////////////////////////////////////////////////////////////
+
 
   /* CSS RELATED */
 
