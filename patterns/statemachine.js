@@ -17,7 +17,6 @@
 		// next to execute - can be null if changeState hasn't been called
 		this.next = function(){ return nextState ; }
 
-
 		this.setNextState = function(state){
 			nextState = state;
 			return this;
@@ -52,6 +51,18 @@
 			stateGraph[state]=func ;
 			return this ;
 		}
+
+		// helper method for easily applying compostion
+
+        this.through = function(obj){
+			obj.prev = this.prev.bind(this) ;
+			obj.state = this.state.bind(this) ;
+			obj.next = this.next.bind(this) ;
+			obj.setNextState = this.setNextState.bind(this) ;
+			obj.changeState = this.changeState.bind(this) ;
+			obj.goTo = this.goTo.bind(this) ;
+			obj.addState = this.addState.bind(this) ;       	
+        }		
 	}
 //////////////////////
 // implementation
