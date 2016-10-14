@@ -7,6 +7,7 @@
 
 
         // current usage:
+        
         //     immediate
         //         load url
         //             emit global 'event' on completion
