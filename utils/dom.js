@@ -58,9 +58,11 @@
     if(!value) {
       // using utils.removeClass on classMap directly causes errors because it is edited internally by utils.removeClass
       // to mask unintended results copy is passed to iterate over      
-      for (v in app.utils.classMap) app.utils.removeClass(app.utils.classMap[v].concat(), v) ;        
+      for (v in app.utils.classMap)
+        app.utils.removeClass(app.utils.classMap[v].concat(), v) ;        
     } else {
-        if(app.utils.classMap[value]) app.utils.removeClass(app.utils.classMap[value].concat(), value) ;
+        if(app.utils.classMap[value]) 
+          app.utils.removeClass(app.utils.classMap[value].concat(), value) ;
     }
   };
 

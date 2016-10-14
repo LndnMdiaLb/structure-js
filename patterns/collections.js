@@ -59,18 +59,23 @@
 			    if ( (idx = this.indexOf(obj) ) != -1 ) this.splice(idx, 1) ;
 			    */
 		if (array.length) return this.remove(array) ;
-		/**/
+		
 		return this ;
 	}
 
-	 function removeAt (idx){
-		var array = (obj instanceof Array) ?
-			obj.concat() :
+	// ???? error - with every recursion array els move so numbers refer to unintented start pos in splice
+	// try this.removeAt.val 
+
+	function removeAt (idx){
+		var array = (idx instanceof Array) ?
+			idx.concat() :
 			Array.prototype.slice.call(arguments) ,
+			//this.removeAt.val = this.removeAt.val || 1 ,
+			//this.removeAt.val = this.removeAt.val? this.removeAt.val++ : 1 ,
 
-			obj = array.shift() ;
+			idx = array.shift() ;
 
-			if( typeof idx == 'number' ) this.splice(obj, 1);
+			if( typeof idx == 'number' ) this.splice(idx, 1);
 
 			if (array.length) return this.removeAt(array) ;
 

@@ -16,7 +16,7 @@
 
             var
                 // if private create private CHANNELS OBJECT else reference GLOBALCHANNELS
-                CHANNELS = (_private)? new app.Map : GLOBALCHANNELS ;
+                CHANNELS = (_private) ? new app.Map : GLOBALCHANNELS ;
 
             this.register = function(ev, callback) {
                 CHANNELS.add(ev, callback);
