@@ -1,4 +1,5 @@
 // dependency : collection.js
+// dependency : dispatcher.js
 
 (function (app) {
 
@@ -36,7 +37,7 @@
 			//////////////
 			// EXECUTE
 			//////////////
-			if(!activeState) return this // thow error ??
+			if(!stateGraph[activeState]) return this // thow error ??
 
 			//stateGraph[activeState]()  // this == stateGraph
 			stateGraph[activeState].apply(this, args?args:[]) ; // this == StateMachine
@@ -61,6 +62,28 @@
         		if (method != 'augment') obj[method] = this[method].bind(this) ;    	
         }		
 	}
+
+	app.Sequence = (function(){
+
+		var sequencers = {} ;
+
+		function Sequence(key){
+
+			if(sequencers[key]) return sequencers[key] ;
+
+			var sm = new app.StateMachine,
+				d = new app.Dispatcher ;
+			
+			// compostion
+			sm.augment(this) ;
+			d.augment(this) ;
+
+			sequencers[key] = this ;
+		}
+
+		return Sequence;
+
+	})() ;	
 //////////////////////
 // implementation
 //////////////////////
