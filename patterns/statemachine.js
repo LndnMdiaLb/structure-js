@@ -1,3 +1,5 @@
+// dependency : collection.js
+
 (function (app) {
 
 	app.StateMachine = function StateMachine(){
@@ -54,14 +56,9 @@
 
 		// helper method for easily applying compostion
 
-        this.through = function(obj){
-			obj.prev = this.prev.bind(this) ;
-			obj.state = this.state.bind(this) ;
-			obj.next = this.next.bind(this) ;
-			obj.setNextState = this.setNextState.bind(this) ;
-			obj.changeState = this.changeState.bind(this) ;
-			obj.goTo = this.goTo.bind(this) ;
-			obj.addState = this.addState.bind(this) ;       	
+        this.augment = function(obj){
+        	for (method in this)
+        		if (method != 'augment') obj[method] = this[method].bind(this) ;    	
         }		
 	}
 //////////////////////

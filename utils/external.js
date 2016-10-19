@@ -35,7 +35,7 @@
             ;
 
         // fast method to provide access to dispatcher api via composition
-        dispatch.through(this) ;
+        dispatch.augment(this) ;
 
         Object.defineProperty(this, 'DEFAULT', {
             get:function(){

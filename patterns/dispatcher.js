@@ -44,11 +44,10 @@
 
             // helper method for easily applying compostion
 
-            this.through = function(obj){
-                obj.register = this.register.bind(this) ;
-                obj.unregister = this.unregister.bind(this) ;
-                obj.emit = this.emit.bind(this) ;
-            }
+            this.augment = function(obj){
+                for (method in this)
+                    if (method != 'augment') obj[method] = this[method].bind(this) ;        
+            }   
 
         };
 
