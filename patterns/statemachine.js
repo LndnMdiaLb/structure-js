@@ -62,7 +62,7 @@
         		if (method != 'augment') obj[method] = this[method].bind(this) ;    	
         }		
 	}
-
+/*
 	app.Sequence = (function(){
 
 		var sequencers = {} ;
@@ -78,12 +78,52 @@
 			sm.augment(this) ;
 			d.augment(this) ;
 
-			sequencers[key] = this ;
+			if(key) sequencers[key] = this ;
 		}
 
 		return Sequence;
 
 	})() ;	
+
+*/	
+
+	app.Sequence = (function(){
+
+		var sequencers = {},
+			isglobal ;
+
+		function Sequence(key){
+
+			if(sequencers[isglobal || key]) return sequencers[isglobal || key] ;
+
+			var sm = new app.StateMachine,
+				d = new app.Dispatcher ;
+			
+			// compostion
+			sm.augment(this) ;
+			d.augment(this) ;
+
+			if(isglobal || key) sequencers[isglobal || key] = this ;
+		}
+
+		Object.defineProperty(Sequence.prototype, 'forceGlobal',{
+			get: function(){
+				return isglobal ; 
+			},
+			set: function(is){
+				if(isglobal) return ;
+				isglobal = 'global' ;
+				sequencers[isglobal] = this
+			}
+		})
+		
+		//Sequence.prototype.forceGlobal = 
+
+		return Sequence;
+
+	})() ;	
+
+
 //////////////////////
 // implementation
 //////////////////////
