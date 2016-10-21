@@ -12,6 +12,33 @@
   //////////////////////////////////////////////////////////////////////////////////////////
 
 
+/*
+
+  ///////////////////////////
+  // concept :  
+  ///////////////////////////
+
+// add the capacity to  addClass at time
+
+app.utils.addClassT = function(el, _class, t){
+  var tm = setTimeout(
+    function(){ 
+      app.utils.addClass(el, _class); }
+      , t );
+  (utils.timeclassMap || (utils.timeclassMap = new app.Map)) && utils.timeclassMap.add(el, tm) ; 
+              
+} 
+
+kill the settimeout
+
+app.utils.addClassT.kill = function(el){
+  clearTimeout(utils.timeclassMap[el]);
+  utils.timeclassMap.remove(el, utils.timeclassMap[el])
+}
+
+*/
+
+
 
   /* accepts array */
   utils.addClass= function(domEl,value){
