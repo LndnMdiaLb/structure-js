@@ -1,6 +1,4 @@
-## STRUCTURE JS
-
----
+# STRUCTURE JS
 
 ultra-light boilerplate for creative builds
 
@@ -12,15 +10,22 @@ ultra-light boilerplate for creative builds
 
 *	Experiential Ads
 
+
+## Branches
+
 ---
 
-###Core
+###Core  -- merge / develop on develop branch
 
 **collections.js**
 
 **dispatcher.js** _collections.js dependency_
 
 **statemachine.js** _collections.js  dependency_
+
+*   Statemachine
+
+*   Sequencer
 
 **external.js** _collections.js , dispatcher.js dependency_
 
@@ -41,3 +46,16 @@ ultra-light boilerplate for creative builds
 **filter.js**
 
 **browser.js**
+
+---
+
+
+###Structure - Custom
+
+*   includes index.html template
+
+---
+
+###Structure - DC Basic
+
+*   includes index.html template with Enabler initalise code
