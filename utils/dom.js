@@ -12,36 +12,9 @@
   //////////////////////////////////////////////////////////////////////////////////////////
 
 
-/*
-
-  ///////////////////////////
-  // concept :  
-  ///////////////////////////
-
-// add the capacity to  addClass at time
-
-app.utils.addClassT = function(el, _class, t){
-  var tm = setTimeout(
-    function(){ 
-      app.utils.addClass(el, _class); }
-      , t );
-  (utils.timeclassMap || (utils.timeclassMap = new app.Map)) && utils.timeclassMap.add(el, tm) ; 
-              
-} 
-
-kill the settimeout
-
-app.utils.addClassT.kill = function(el){
-  clearTimeout(utils.timeclassMap[el]);
-  utils.timeclassMap.remove(el, utils.timeclassMap[el])
-}
-
-*/
-
-
 
   /* accepts array */
-  utils.addClass= function(domEl,value){
+  utils.addClass= function(domEl,value, time){
       var has = this.hasClass ;
       function add(el){
         if(has(el, value)) return ;
@@ -49,10 +22,69 @@ app.utils.addClassT.kill = function(el){
         // utility to keep track of class manipulation ( ex. banner reset )
         (utils.classMap || (utils.classMap = new app.Map)) && utils.classMap.add(value, el) ;        
       }
+
+
+      /*
+
+        ///////////////////////////
+        // concept :  
+        ///////////////////////////
+
+      // add the capacity to  addClass at time
+
+      app.utils.addClassT = function(el, _class, t){
+        var tm = setTimeout(
+          function(){ 
+            app.utils.addClass(el, _class); }
+            , t );
+        (utils.timeclassMap || (utils.timeclassMap = new app.Map)) && utils.timeclassMap.add(el, tm) ; 
+                    
+      } 
+
+      kill the settimeout
+
+      app.utils.addClassT.kill = function(el){
+        clearTimeout(utils.timeclassMap[el]);
+        utils.timeclassMap.remove(el, utils.timeclassMap[el])
+      }
+
+      */
+        
+
+
+      var s = setTimeout(
+              function (){ 
+                utils.addClass(domEl, value) ; 
+              }, 100) ;
+
+      if(time)
+        var tm = setTimeout( function(){ 
+                    utils.addClass(domEl, value); 
+                  }, time ) ;
+
+      /*
+      
+        kill timer (domel-val)
+        timeclassMap:{
+          el:{
+            timer-id: setTimeout ,
+            timer-id-2: setTimeout ,
+            timer-id-3: setTimeout
+          }
+        }
+
+      */
+
+        (utils.timers || (utils.timers = new app.Map)) && utils.timers.add(domEl, tm) ; 
+
       (domEl instanceof Array)?
         domEl.forEach(add) :
         add(domEl) ;
   };
+
+  utils.addClass.kill = function(domEl){
+    utils.timers && utils.classMap.remove(value, el)
+  }
 
   /* accepts array */
   utils.removeClass= function(domEl,value){
