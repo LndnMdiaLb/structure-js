@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
+		<script type="text/javascript" src="structure.js"></script>	
+		<link rel="stylesheet" type="text/css" href="styles.css">
+		<title></title>
+	</head>
+	<body>
+
+		<!-- CREATIVE STRUCTURE GOES HERE-->
+		
+	</body>
+	<script type="text/javascript">
+
+		window.onload =function(){
+
+			/////////////////////
+	        // pre-load images prior to animation intialise
+	        /////////////////////
+
+			var
+				polite = true,			 
+				pageLoaded = pageVisible = true ,
+	        	loader = new app.utils.IMGLoader('paused', 'private') ;
+
+				loader.register(loader.DEFAULT, 
+					function(e){
+						pageLoaded = true;
+						if(pageLoaded && pageVisible) app.initialize();
+			        }) ;
+
+			/////////////////////
+	        // image preload
+	        /////////////////////
+
+			function loadRich(){
+
+				///////
+		        // custom selector here
+		        ///////
+
+		        var selector = 'div[data-url]';
+
+		        Array.prototype.slice.call( document.querySelectorAll(selector))
+		        	.forEach( 
+		        		function(element,i,a) {
+		            		// collect url
+		            		var url = element.getAttribute('data-url') ;
+
+		            		// load image
+		            		loader.load( url, 
+		            			// on load make changes to element (including add img to it)
+		            			function(ev){
+									element.style['background-image']='url('+url+')';
+
+									/////////////////////
+									// custom logic here
+									/////////////////////
+
+									// this - img loaded
+
+								} ) ;		        
+		            		}) ;
+
+			        		loader.start()	;		        	
+		    };
+
+		    (polite?loadRich:app.initialize)() ;
+
+		} ;
+
+		app.initialize = function(){
+
+			/////////////////////
+			// creative logic here
+			/////////////////////	
+
+		}
+
+	</script>
+</html>
