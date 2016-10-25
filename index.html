@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
+		<script type="text/javascript" src="https://s0.2mdn.net/ads/studio/Enabler.js"></script>
+		<script type="text/javascript" src="structure.js"></script>
+		<link rel="stylesheet" type="text/css" href="styles.css">
+		<title></title>
+	</head>
+	<body>
+
+		<!-- CREATIVE STRUCTURE GOES HERE-->
+			
+	</body>
+	<script type="text/javascript">
+
+		window.onload =function(){
+
+			/////////////////////
+			////////// basic Enabler
+			/////////////////////
+
+			var 
+				polite = true ,
+				pageLoaded = pageVisible = false ,
+				ev = studio.events.StudioEvent ,
+				l = Enabler.addEventListener.bind(Enabler) 
+				;
+
+			Enabler.isInitialized()?
+				enablerInitialized() :
+				l( ev.INIT, enablerInitialized) ;
+
+			function enablerInitialized(){
+				Enabler.isPageLoaded() ?
+					(polite?loadRich:loaded)() :
+					l(ev.PAGE_LOADED, (polite?loadRich:loaded)) ;
+				Enabler.isVisible() ?
+					inView() :
+				    l(ev.VISIBLE, inView) ;
+			} ;
+
+			function inView(){
+				pageVisible = true;
+				if(pageLoaded && pageVisible) app.initialize();
+			};
+
+			function loaded(){
+				pageLoaded = true;
+				if(pageLoaded && pageVisible) app.initialize();
+			};				
+
+			/////////////////////
+	        // polite load images prior to app.initialize
+	        /////////////////////					
+
+	        var loader = new app.utils.IMGLoader('paused', 'private') ;
+				loader.register(loader.DEFAULT, loaded) ;
+
+			/////////////////////
+	        // image preload
+	        /////////////////////
+
+			function loadRich(){
+
+				///////
+		        // custom selector here
+		        ///////
+
+		        var selector = 'div[data-url]';
+
+		        Array.prototype.slice.call( document.querySelectorAll(selector))
+		        	.forEach( 
+		        		function(element,i,a) {
+		            		// collect url
+		            		var url = element.getAttribute('data-url') ;
+
+		            		// load image
+		            		loader.load( url, 
+		            			// on load make changes to element (including add img to it)
+		            			function(ev){
+									element.style['background-image']='url('+url+')';
+
+									/////////////////////
+									// custom logic here
+									/////////////////////
+
+									// this - img loaded
+
+								} ) ;		        
+		            		}) ;
+
+		        			loader.start()	;
+		    };
+
+		} ;
+
+		app.initialize = function(){
+
+			/////////////////////
+			// creative logic here
+			/////////////////////	
+					
+		}
+
+	</script>
+
+</html>
