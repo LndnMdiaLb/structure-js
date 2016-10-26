@@ -28,9 +28,18 @@ json.prop
 
 global.vars = {}
 
-gulp.task('compile', function(){
-    return gulp.src(['!./*.js','./**/*.js'])
+gulp.task('test-compile', function(){
+    return gulp.src(['!./*.js','!_testing/**/*.js','./**/*.js'])
         .pipe(concat('_testing/struct.js'))
+        .pipe(strip({line:true}))
+        .pipe(removeLines())
+        .pipe(gulp.dest('.'))
+});
+
+
+gulp.task('compile', function(){
+    return gulp.src(['!./*.js','!_testing/**/*.js','./**/*.js'])
+        .pipe(concat('structure.js'))
         .pipe(strip({line:true}))
         .pipe(removeLines())
         .pipe(gulp.dest('.'))
