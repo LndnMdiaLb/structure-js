@@ -18,72 +18,160 @@
       var has = this.hasClass ;
       function add(el){
         if(has(el, value)) return ;
+
+        if(time){
+          (function(){
+           var tm = setTimeout(
+            function(){ 
+              app.utils.addClass(el, value); }
+                el.addtimers && el.addtimers.remove(value, tm) ;  
+              , t ); 
+            (el.addtimers || (utils.addtimers = new app.Map)) && utils.addtimers.add(value, tm) ; 
+            })();
+            return ;   
+        }
+
         el.className += el.className ? ' ' + value : value ;
         // utility to keep track of class manipulation ( ex. banner reset )
         (utils.classMap || (utils.classMap = new app.Map)) && utils.classMap.add(value, el) ;        
       }
 
 
-      /*
 
-        ///////////////////////////
-        // concept :  
-        ///////////////////////////
+    /*
 
-      // add the capacity to  addClass at time
-
-      app.utils.addClassT = function(el, _class, t){
-        var tm = setTimeout(
-          function(){ 
-            app.utils.addClass(el, _class); }
-            , t );
-        (utils.timeclassMap || (utils.timeclassMap = new app.Map)) && utils.timeclassMap.add(el, tm) ; 
-                    
-      } 
-
-      kill the settimeout
-
-      app.utils.addClassT.kill = function(el){
-        clearTimeout(utils.timeclassMap[el]);
-        utils.timeclassMap.remove(el, utils.timeclassMap[el])
-      }
-
-      */
-        
+  //////////////////////////////////////////////////////////////////////////////////////////
+  // IDEAL USAGE
+  //////////////////////////////////////////////////////////////////////////////////////////
 
 
-      var s = setTimeout(
-              function (){ 
-                utils.addClass(domEl, value) ; 
-              }, 100) ;
+       utils
+        .addClass(el, 'on', 1000)  // store timerID -- associate to 
+        .addClass(el, 'on', 1000)
+        .addClass.kill(el, 'on')
+        .addClass.pause(el, 'on')
+        ;
 
-      if(time)
-        var tm = setTimeout( function(){ 
-                    utils.addClass(domEl, value); 
-                  }, time ) ;
 
-      /*
-      
-        kill timer (domel-val)
-        timeclassMap:{
-          el:{
-            timer-id: setTimeout ,
-            timer-id-2: setTimeout ,
-            timer-id-3: setTimeout
-          }
+        function addTimer (el, key){
+  
         }
 
-      */
 
-        (utils.timers || (utils.timers = new app.Map)) && utils.timers.add(domEl, tm) ; 
+  //////////////////////////////////////////////////////////////////////////////////////////
+  // DATA STORAGE IDEAS
+  //////////////////////////////////////////////////////////////////////////////////////////
+
+
+      ///////////////////////////
+      // concept 1:
+      // idea for storing timerIDs in association to classes 
+      ///////////////////////////  
+
+      addMap =
+              [
+
+                {   
+                  el: element, 
+                  map: {
+                    value:[timerID, timerID2],
+                    value:[timerID3]
+                  } 
+                } ,
+
+                {   
+                  el: element, 
+                  map: {
+                    value:[timerID4, timerID6],
+                    value:[timerID5]
+                  } 
+                } ,
+
+                {   
+                  el: element, 
+                  map: {
+                    value:[timerID4, timerID6],
+                    value:[timerID5]
+                  } 
+                }
+
+              ] ;
+
+            {   
+              el: element,            
+              map: new app.Map
+            }
+
+      // usage
+
+      addMap[x].el ;
+      addMap[x].map[value][1] ; // == timers
+
+       
+
+      ///////////////////////////
+      // concept 2:
+      // store directly on elements in association to classes  
+      ///////////////////////////        
+      
+
+      element
+        .addtimers = {
+            value:[timerID4, timerID6],
+            value:[timerID5]
+          }
+        .removetimers = {
+            value:[timerID4, timerID6],
+            value:[timerID5]
+          }            
+
+
+      ///////////////////////////
+      // example usage
+      ///////////////////////////
+
+
+      (function(){
+       var tm = setTimeout(
+        function(){ 
+          app.utils.addClass(el, _class); }
+            el.addtimers && el.addtimers.remove(_class, tm) ;  
+          , t ); 
+        (el.addtimers || (utils.addtimers = new app.Map)) && utils.addtimers.add(_class, tm) ; 
+        })();    
+
+
+      // kill the settimeout
+
+
+      app.utils.addClassT.kill = function(domEl,value) {
+        
+        var tm = el.addtimers[domel][value] ;
+        clearTimeout(tm) ;
+        el.addtimers && el.addtimers.remove(_class, tm) ;  
+
+        utils.timeclassMap.remove(el, utils.timeclassMap[el]) ;
+
+      }
+
+
+
+    */  
 
       (domEl instanceof Array)?
         domEl.forEach(add) :
         add(domEl) ;
   };
 
-  utils.addClass.kill = function(domEl){
-    utils.timers && utils.classMap.remove(value, el)
+  utils.addClass.kill = function(domEl, value){
+      
+      var tm = el.addtimers[domel][value] ;
+
+      tm.forEach(function(id){
+        clearTimeout(id) ;
+        domEl.addtimers && domEl.addtimers.remove(value, id) ;          
+      })
+
   }
 
   /* accepts array */
