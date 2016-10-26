@@ -1,3 +1,6 @@
+// dependency : collection.js
+// dependency : dispatcher.js
+
 (function (app) {
 
 	app.StateMachine = function StateMachine(){
@@ -34,7 +37,7 @@
 			//////////////
 			// EXECUTE
 			//////////////
-			if(!activeState) return this // thow error ??
+			if(!stateGraph[activeState]) return this // thow error ??
 
 			//stateGraph[activeState]()  // this == stateGraph
 			stateGraph[activeState].apply(this, args?args:[]) ; // this == StateMachine
@@ -54,16 +57,73 @@
 
 		// helper method for easily applying compostion
 
-        this.through = function(obj){
-			obj.prev = this.prev.bind(this) ;
-			obj.state = this.state.bind(this) ;
-			obj.next = this.next.bind(this) ;
-			obj.setNextState = this.setNextState.bind(this) ;
-			obj.changeState = this.changeState.bind(this) ;
-			obj.goTo = this.goTo.bind(this) ;
-			obj.addState = this.addState.bind(this) ;       	
+        this.augment = function(obj){
+        	for (method in this)
+        		if (method != 'augment') obj[method] = this[method].bind(this) ;    	
         }		
 	}
+/*
+	app.Sequence = (function(){
+
+		var sequencers = {} ;
+
+		function Sequence(key){
+
+			if(sequencers[key]) return sequencers[key] ;
+
+			var sm = new app.StateMachine,
+				d = new app.Dispatcher ;
+			
+			// compostion
+			sm.augment(this) ;
+			d.augment(this) ;
+
+			if(key) sequencers[key] = this ;
+		}
+
+		return Sequence;
+
+	})() ;	
+
+*/	
+
+	app.Sequence = (function(){
+
+		var sequencers = {},
+			isglobal ;
+
+		function Sequence(key){
+
+			if(sequencers[isglobal || key]) return sequencers[isglobal || key] ;
+
+			var sm = new app.StateMachine,
+				d = new app.Dispatcher ;
+			
+			// compostion
+			sm.augment(this) ;
+			d.augment(this) ;
+
+			if(isglobal || key) sequencers[isglobal || key] = this ;
+		}
+
+		Object.defineProperty(Sequence.prototype, 'forceGlobal',{
+			get: function(){
+				return isglobal ; 
+			},
+			set: function(is){
+				if(isglobal) return ;
+				isglobal = 'global' ;
+				sequencers[isglobal] = this
+			}
+		})
+		
+		//Sequence.prototype.forceGlobal = 
+
+		return Sequence;
+
+	})() ;	
+
+
 //////////////////////
 // implementation
 //////////////////////
