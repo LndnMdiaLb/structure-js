@@ -113,11 +113,38 @@
 		app.utils.addClass(document.querySelector('.f'), 'x')
 		app.utils.addClass(document.querySelector('.f'), 'y')
 
-		
-		setTimeout(function(){
-			app.utils.reset('x') ;
-		}, 5000)
+		// app.utils.addClass(document.querySelector('.f'), 'z')
 
+		/////////////
+		// timed classes
+		/////////////
+
+		app.utils
+			.addClass(document.querySelector('.f'), 'z', 6000)
+			.addClass(document.querySelector('.f'), 'o', 6000)
+		
+			.removeClass(document.querySelector('.f'), 'z', 12000)
+		console.log(document.querySelector('.f').addtimers)
+	
+			console.log(app.utils.classMap, 'classMap')
+
+	
+		app.utils.removeClass(document.querySelector('.f'), 'o', 18000)
+
+			// kill affects classMap
+			
+			.removeClass.kill(document.querySelector('.f'), 'o')
+			//.removeClass(document.querySelector('.f'), 'o', 19000)
+
+		console.log(document.querySelector('.f').addtimers)
+		console.log(app.utils.classMap, 'classMap')
+
+		
+		app.utils.reset(null, 25000) ;
+
+		setTimeout(function(){
+			console.log(document.querySelector('.f').addtimers)
+		}, 20000)
 
 		window.iLoader = iLoader = new app.utils.IMGLoader()
 		iLoader.pause()
