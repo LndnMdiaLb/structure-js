@@ -6,56 +6,7 @@
   var utils = app.utils = app.utils || {};
 
 
-
-  //////////////////////////////////////////////////////////////////////////////////////////
-  // UTILISING A CLASS MAP FOR MEMORY (RESETS IN BANNERS)
-  //////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-  /* accepts array */
-  utils.addClass= function(domEl,value, time){
-      var has = this.hasClass ;
-      function add(el){
-        if(has(el, value)) return ;
-
-        if(time){
-          (function(){
-           var tm = setTimeout(
-            function(){ 
-              app.utils.addClass(el, value); }
-                el.addtimers && el.addtimers.remove(value, tm) ;  
-              , t ); 
-            (el.addtimers || (utils.addtimers = new app.Map)) && utils.addtimers.add(value, tm) ; 
-            })();
-            return ;   
-        }
-
-        el.className += el.className ? ' ' + value : value ;
-        // utility to keep track of class manipulation ( ex. banner reset )
-        (utils.classMap || (utils.classMap = new app.Map)) && utils.classMap.add(value, el) ;        
-      }
-
-
-
     /*
-
-  //////////////////////////////////////////////////////////////////////////////////////////
-  // IDEAL USAGE
-  //////////////////////////////////////////////////////////////////////////////////////////
-
-
-       utils
-        .addClass(el, 'on', 1000)  // store timerID -- associate to 
-        .addClass(el, 'on', 1000)
-        .addClass.kill(el, 'on')
-        .addClass.pause(el, 'on')
-        ;
-
-
-        function addTimer (el, key){
-  
-        }
 
 
   //////////////////////////////////////////////////////////////////////////////////////////
@@ -111,82 +62,151 @@
 
       ///////////////////////////
       // concept 2:
-      // store directly on elements in association to classes  
+      // store directly on elements in association to classes 
+      // currently implemented
+      //
+      // MAY CAUSE MEMEORY LEAKS  http://stackoverflow.com/questions/9242009/storing-custom-data-in-dom-elements
+      // 
       ///////////////////////////        
       
 
       element
         .addtimers = {
-            value:[timerID4, timerID6],
-            value:[timerID5]
+            class1:[timerID4, timerID6],
+            class2[timerID5]
           }
-        .removetimers = {
-            value:[timerID4, timerID6],
-            value:[timerID5]
+        .remtimers = {
+            class1:[timerID7, timerID8],
+            class2:[timerID9]
           }            
 
-
-      ///////////////////////////
-      // example usage
-      ///////////////////////////
+    */ 
 
 
-      (function(){
-       var tm = setTimeout(
-        function(){ 
-          app.utils.addClass(el, _class); }
-            el.addtimers && el.addtimers.remove(_class, tm) ;  
-          , t ); 
-        (el.addtimers || (utils.addtimers = new app.Map)) && utils.addtimers.add(_class, tm) ; 
-        })();    
-
-
-      // kill the settimeout
-
-
-      app.utils.addClassT.kill = function(domEl,value) {
-        
-        var tm = el.addtimers[domel][value] ;
-        clearTimeout(tm) ;
-        el.addtimers && el.addtimers.remove(_class, tm) ;  
-
-        utils.timeclassMap.remove(el, utils.timeclassMap[el]) ;
-
-      }
+  //////////////////////////////////////////////////////////////////////////////////////////
+  // UTILISING A CLASS MAP FOR MEMORY (RESETS IN BANNERS)
+  //////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-    */  
+  /* accepts array */
+  utils.addClass= function(domEl,value, time){
+      var has = this.hasClass ;
+      function add(el){
+        if(has(el, value)) return ;
+
+        //////////////
+        // timer implementation
+        //////////////
+
+        if(time){
+          (function(){
+           var tm = setTimeout(
+            function(){ 
+                app.utils.addClass(el, value);
+                el.addtimers && el.addtimers.remove(value, tm) ;  
+                }
+              , time ); 
+            (el.addtimers || (el.addtimers = new app.Map)) && el.addtimers.add(value, tm) ; 
+            })();
+            return ;   
+        }
+
+        //////////////
+        // timer implementation end
+        //////////////        
+
+        el.className += el.className ? ' ' + value : value ;
+        // utility to keep track of class manipulation ( ex. banner reset )
+        (utils.classMap || (utils.classMap = new app.Map)) && utils.classMap.add(value, el) ;       
+      } 
+
 
       (domEl instanceof Array)?
         domEl.forEach(add) :
         add(domEl) ;
+
+      return utils ;
   };
 
-  utils.addClass.kill = function(domEl, value){
-      
-      var tm = el.addtimers[domel][value] ;
+  //////////////
+  // timer kill
+  //////////////  
 
-      tm.forEach(function(id){
+  utils.addClass.kill = function(domEl, value, index){
+      if (!domEl.addtimers[value]) return utils ;
+
+      function kill(id){
         clearTimeout(id) ;
         domEl.addtimers && domEl.addtimers.remove(value, id) ;          
-      })
+      }
 
+      (index != undefined) ?
+        kill(domEl.addtimers[value][index]) :
+        domEl.addtimers[value].concat().forEach(kill)
+        ;
+
+      return utils ;
   }
 
   /* accepts array */
-  utils.removeClass= function(domEl,value){
+  utils.removeClass= function(domEl,value, time){
       var bt = this;
       function remove(el,i,arr){
+
+        //////////////
+        // timer implementation
+        //////////////  
+
+        if(time){
+          (function(){
+           var tm = setTimeout(
+            function(){ 
+                app.utils.removeClass(el, value);
+                el.remtimers && el.remtimers.remove(value, tm) ;  
+                }
+              , time ); 
+            (el.remtimers || (el.remtimers = new app.Map)) && el.remtimers.add(value, tm) ; 
+            })();
+            return ;   
+        }
+
+        //////////////
+        // timer implementation end
+        //////////////          
+
         var rep = el.className.match(' '+value) ? ' '+value : value ;
         el.className = el.className.replace(rep,'') ;
         // utility to keep track of class manipulation ( ex. banner reset )
-        utils.classMap && utils.classMap.remove(value, el) ;             
+        utils.classMap && utils.classMap.remove(value, el) ;        
+             
       }
       (domEl instanceof Array) ?
         domEl.forEach(remove) :
         remove(domEl) ;
+
+      return utils ;        
   };
+
+  //////////////
+  // timer kill
+  //////////////  
+
+  utils.removeClass.kill = function(domEl, value, index){
+      if (!domEl.remtimers[value]) return utils ;
+
+      function kill(id){
+        clearTimeout(id) ;
+        domEl.remtimers && domEl.remtimers.remove(value, id) ;          
+      }
+
+      (index != undefined) ?
+        kill(domEl.remtimers[value][index]) :
+        domEl.remtimers[value].concat().forEach(kill)
+        ;
+
+      return utils ;
+  }  
 
   utils.hasClass= function(domEl,value){
       var found = false;
@@ -201,15 +221,19 @@
 
   ///////////////
 
-  utils.reset = function(value){
+  utils.reset = function(value, time){
     if(!value) {
       // using utils.removeClass on classMap directly causes errors because it is edited internally by utils.removeClass
       // to mask unintended results copy is passed to iterate over      
       for (v in app.utils.classMap)
-        app.utils.removeClass(app.utils.classMap[v].concat(), v) ;        
+        (time)?
+          app.utils.removeClass(app.utils.classMap[v].concat(), v, time) :
+          app.utils.removeClass(app.utils.classMap[v].concat(), v) ;        
     } else {
         if(app.utils.classMap[value]) 
-          app.utils.removeClass(app.utils.classMap[value].concat(), value) ;
+          (time)?
+            app.utils.removeClass(app.utils.classMap[value].concat(), value, time) :
+            app.utils.removeClass(app.utils.classMap[value].concat(), value) ;
     }
   };
 
