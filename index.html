@@ -16,7 +16,9 @@
 
 	<script type="text/javascript">
 
-	////////// collections.js
+		//////////////////////////////////////////////////////////////////////////////
+		//	Collections
+		//////////////////////////////////////////////////////////////////////////////
 
 	var a = new app.Map;
 	a.add('x','x');
@@ -34,11 +36,13 @@
 
 	//////////
 
-	////////// dispatcher.js
+		//////////////////////////////////////////////////////////////////////////////
+		//	Dispatcher
+		//////////////////////////////////////////////////////////////////////////////
 
 	var b = new app.Dispatcher;
 	var c = new app.Dispatcher(true);
-	var d = {}
+	var d = {};
 
 	b.augment(d);
 
@@ -103,41 +107,72 @@
 	//////////	
 
 
+
+	function VO(){
+
+		//////////////////////////////////////////////////////////////////////////////
+		//	HTML to JS Structure
+		//////////////////////////////////////////////////////////////////////////////
+
+		var q = document.querySelector.bind( document );
+		
+		// is this a MODEL ?
+		app.el={
+			'a':q('.a'),
+			'b':q('.b'),
+			'c':q('.c'),					
+			'd':q('.d'),
+			'e':q('.e'),
+			'f':q('.f')
+		} ;
+
+		app.vars = {
+				fadeTime:1000,
+				loops:2
+				} ;		
+
+	}	
+
+
 	window.onload =function(){
 
-		app.utils.addClass(document.querySelector('.a'), 'x')
-		app.utils.addClass(document.querySelector('.b'), 'x')
-		app.utils.addClass(document.querySelector('.c'), 'x')
-		app.utils.addClass(document.querySelector('.d'), 'x')
-		app.utils.addClass(document.querySelector('.e'), 'x')
-		app.utils.addClass(document.querySelector('.f'), 'x')
-		app.utils.addClass(document.querySelector('.f'), 'y')
 
-		// app.utils.addClass(document.querySelector('.f'), 'z')
+		//////////////////////////////////////////////////////////////////////////////
+		//	Dispatcher
+		//////////////////////////////////////////////////////////////////////////////
 
-		/////////////
-		// timed classes
-		/////////////
+		app.utils.addClass(app.el.a, 'x')
+		app.utils.addClass(app.el.b, 'x')
+		app.utils.addClass(app.el.c, 'x')
+		app.utils.addClass(app.el.d, 'x')
+		app.utils.addClass(app.el.e, 'x')
+		app.utils.addClass(app.el.f, 'x')
+		app.utils.addClass(app.el.f, 'y')
+		
+		//////////////////////////////////////////////////////////////////////////////
+		//	Dispatcher
+		//////////////////////////////////////////////////////////////////////////////
 
 		app.utils
-			.addClass(document.querySelector('.f'), 'z', 6000)
-			.addClass(document.querySelector('.f'), 'o', 6000)
+			.addClass(app.el.f, 'z', 6000)
+			.addClass(app.el.f, 'o', 6000)
 		
-			.removeClass(document.querySelector('.f'), 'z', 12000)
+			.removeClass(app.el.f, 'z', 12000)
 	
-			.removeClass(document.querySelector('.f'), 'o', 18000)
+			.removeClass(app.el.f, 'o', 18000)
 
 			// kills removeClass
-			.removeClass.kill(document.querySelector('.f'), 'o')
+			.removeClass.kill(app.el.f, 'o')
 		
 			.reset(null, 25000) ;
 
-		setTimeout(function(){
-			console.log(document.querySelector('.f').addtimers)
-		}, 20000)
 
-		window.iLoader = iLoader = new app.utils.IMGLoader()
-		iLoader.pause()
+		//////////////////////////////////////////////////////////////////////////////
+		//	img loading
+		//////////////////////////////////////////////////////////////////////////////
+
+		window.iLoader = iLoader = new app.utils.IMGLoader() ;
+		iLoader.pause() ;
 
 		// iLoader.load(
 		// 	['img1.png', 'img2.png'],
@@ -167,7 +202,7 @@
 		//iLoader.start('img-loaded-2')
 
 		iLoader.register('img-loaded', function(){
-			console.log('private img-loaded caught')
+			console.log('private img-loaded caught') ;
 		})
 
 		setTimeout( function(){
