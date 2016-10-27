@@ -224,6 +224,7 @@
     if(!value) {
       // using utils.removeClass on classMap directly causes errors because it is edited internally by utils.removeClass
       // to mask unintended results copy is passed to iterate over      
+      (time)?
       for (v in app.utils.classMap)
         (time)?
           app.utils.removeClass(app.utils.classMap[v].concat(), v, time) :
