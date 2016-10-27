@@ -8,6 +8,13 @@
 
     /*
 
+  // classes added during runtime
+
+  utils.classMap = 
+  {
+    value:[el1, el2, el3],
+    value2:[el1, el2, el3],
+  }
 
   //////////////////////////////////////////////////////////////////////////////////////////
   // DATA STORAGE IDEAS
@@ -19,46 +26,38 @@
       // idea for storing timerIDs in association to classes 
       ///////////////////////////  
 
-      addMap =
-              [
-
-                {   
-                  el: element, 
-                  map: {
-                    value:[timerID, timerID2],
-                    value:[timerID3]
-                  } 
-                } ,
-
-                {   
-                  el: element, 
-                  map: {
-                    value:[timerID4, timerID6],
-                    value:[timerID5]
-                  } 
-                } ,
-
-                {   
-                  el: element, 
-                  map: {
-                    value:[timerID4, timerID6],
-                    value:[timerID5]
-                  } 
-                }
-
-              ] ;
-
-            {   
-              el: element,            
-              map: new app.Map
-            }
-
       // usage
+      
+      {
+        el: element ,
 
-      addMap[x].el ;
-      addMap[x].map[value][1] ; // == timers
+        timers: {
 
-       
+          add:{
+            'value1'=[id1,id2],
+            'value2'=[id3,id4],
+          },
+
+          rmv:{
+            'value1'=[id5,id6],
+            'value2'=[id7,id8],
+          },
+
+          killed:{
+            'value1'=[id5,id6],
+            'value2'=[id7,id8],            
+          }
+                  
+        },
+
+
+      }
+
+      dictionary.forEach(function(elData){
+          if(eldata.el == element)
+            eldata.ref.add[value]
+      })      
+
 
       ///////////////////////////
       // concept 2:
