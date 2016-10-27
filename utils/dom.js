@@ -219,22 +219,29 @@
   };
 
   ///////////////
-
+  
   utils.reset = function(value, time){
-    if(!value) {
-      // using utils.removeClass on classMap directly causes errors because it is edited internally by utils.removeClass
-      // to mask unintended results copy is passed to iterate over      
-      (time)?
-      for (v in app.utils.classMap)
-        (time)?
-          app.utils.removeClass(app.utils.classMap[v].concat(), v, time) :
-          app.utils.removeClass(app.utils.classMap[v].concat(), v) ;        
-    } else {
-        if(app.utils.classMap[value]) 
-          (time)?
-            app.utils.removeClass(app.utils.classMap[value].concat(), value, time) :
-            app.utils.removeClass(app.utils.classMap[value].concat(), value) ;
+    
+    if(time){
+      setTimeout(function(){
+        utils.reset(value) ;
+      }, time ) ;
+      return
     }
+
+    function remove(value){
+      if(app.utils.classMap[value])
+          // using utils.removeClass on classMap directly causes errors because it is edited internally by utils.removeClass
+          // to mask unintended results copy is passed to iterate over       
+          app.utils.removeClass(app.utils.classMap[value].concat(), value) ;
+    }
+
+    if(!value) { 
+      for (v in app.utils.classMap) remove(v);        
+    } else {
+        remove(value) ;
+    }
+    
   };
 
 
