@@ -124,23 +124,13 @@
 			.addClass(document.querySelector('.f'), 'o', 6000)
 		
 			.removeClass(document.querySelector('.f'), 'z', 12000)
-		console.log(document.querySelector('.f').addtimers)
 	
-			console.log(app.utils.classMap, 'classMap')
+			.removeClass(document.querySelector('.f'), 'o', 18000)
 
-	
-		app.utils.removeClass(document.querySelector('.f'), 'o', 18000)
-
-			// kill affects classMap
-			
+			// kills removeClass
 			.removeClass.kill(document.querySelector('.f'), 'o')
-			//.removeClass(document.querySelector('.f'), 'o', 19000)
-
-		console.log(document.querySelector('.f').addtimers)
-		console.log(app.utils.classMap, 'classMap')
-
 		
-		app.utils.reset(null, 25000) ;
+			.reset(null, 25000) ;
 
 		setTimeout(function(){
 			console.log(document.querySelector('.f').addtimers)
