@@ -6,82 +6,6 @@
   var utils = app.utils = app.utils || {};
 
 
-    /*
-
-  // classes added during runtime
-
-  utils.classMap = 
-  {
-    value:[el1, el2, el3],
-    value2:[el1, el2, el3],
-  }
-
-  //////////////////////////////////////////////////////////////////////////////////////////
-  // DATA STORAGE IDEAS
-  //////////////////////////////////////////////////////////////////////////////////////////
-
-
-      ///////////////////////////
-      // concept 1:
-      // idea for storing timerIDs in association to classes 
-      ///////////////////////////  
-
-      // usage
-      
-      {
-        el: element ,
-
-        timers: {
-
-          add:{
-            'value1'=[id1,id2],
-            'value2'=[id3,id4],
-          },
-
-          rmv:{
-            'value1'=[id5,id6],
-            'value2'=[id7,id8],
-          },
-
-          killed:{
-            'value1'=[id5,id6],
-            'value2'=[id7,id8],            
-          }
-                  
-        },
-
-
-      }
-
-      dictionary.forEach(function(elData){
-          if(eldata.el == element)
-            eldata.ref.add[value]
-      })      
-
-
-      ///////////////////////////
-      // concept 2:
-      // store directly on elements in association to classes 
-      // currently implemented
-      //
-      // MAY CAUSE MEMEORY LEAKS  http://stackoverflow.com/questions/9242009/storing-custom-data-in-dom-elements
-      // 
-      ///////////////////////////        
-      
-
-      element
-        .addtimers = {
-            class1:[timerID4, timerID6],
-            class2[timerID5]
-          }
-        .remtimers = {
-            class1:[timerID7, timerID8],
-            class2:[timerID9]
-          }            
-
-    */ 
-
-
   //////////////////////////////////////////////////////////////////////////////////////////
   // UTILISING A CLASS MAP FOR MEMORY (RESETS IN BANNERS)
   //////////////////////////////////////////////////////////////////////////////////////////
@@ -239,9 +163,11 @@
     if(!value) { 
       for (v in app.utils.classMap) remove(v);        
     } else {
-        remove(value) ;
+      remove(value) ;
     }
     
+    return utils ;
+
   };
 
 
