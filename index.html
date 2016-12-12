@@ -20,14 +20,29 @@
 		//	Collections
 		//////////////////////////////////////////////////////////////////////////////
 
-	var a = new app.Map;
-	a.add('x','x');
-	a.add('x','y');
-	a.add('x','z');
-	a.add('x','o');
-	a.remove('x','o');
-	a.add('y','o');
-	console.log(a)
+	window.a = new app.Map;
+	// a.add('x','x');
+	// a.add('x','y');
+	// a.add('x','z');
+	// a.add('x','o');
+	// a.add('y','o');
+
+	// a.add('addtimers','classA', '1');		
+	// a.add('addtimers','classA', '2');	
+	// a.add('addtimers','classA', '3');
+	// a.add('addtimers','classA');
+
+	// a.add('addtimers', 'temp', 'classA', '3');					
+
+	// a.add('y',[{}, 'o2']);
+	// a.remove('x','x');
+	// a.remove('x','y');
+	// a.remove('x','z');
+	// a.remove('x','o');
+
+	// console.log(a)
+	// console.log(a instanceof app.Map)
+
 	
 	var s = new app.Set;
 	s.add('x');
@@ -61,11 +76,13 @@
 			console.log('if only c is visible c a private dispatcher')
 		}) ;	
 
-	c.emit('a');
+	// c.emit('a');
 
 	//////////
 
-	////////// statemachine.js
+		//////////////////////////////////////////////////////////////////////////////
+		//	Statemachine
+		//////////////////////////////////////////////////////////////////////////////
 
 	var Sequence = function(){
 		var sm = new app.StateMachine;
@@ -102,7 +119,7 @@
 		console.log('global img-loaded caught')
 	})
 
-	sm.goTo('a');
+	// sm.goTo('a');
 
 	//////////	
 
@@ -135,43 +152,45 @@
 
 
 	window.onload =function(){
-
+		VO();
 
 		//////////////////////////////////////////////////////////////////////////////
-		//	Dispatcher
+		//	Class Manipulation
 		//////////////////////////////////////////////////////////////////////////////
+		var u = app.utils ;
 
-		app.utils.addClass(app.el.a, 'x')
-		app.utils.addClass(app.el.b, 'x')
-		app.utils.addClass(app.el.c, 'x')
-		app.utils.addClass(app.el.d, 'x')
-		app.utils.addClass(app.el.e, 'x')
-		app.utils.addClass(app.el.f, 'x')
-		app.utils.addClass(app.el.f, 'y')
+		u
+			.addClass(app.el.a, 'x')
+			.addClass(app.el.b, 'x')
+			.addClass(app.el.c, 'x')
+			.addClass(app.el.d, 'x')
+			.addClass(app.el.e, 'x')
+			.addClass(app.el.f, 'x')
+			.addClass(app.el.f, 'y')
+		;
 		
 		//////////////////////////////////////////////////////////////////////////////
-		//	Dispatcher
+		//	timed Class Manipulation
 		//////////////////////////////////////////////////////////////////////////////
 
-		app.utils
+		u
 			.addClass(app.el.f, 'z', 6000)
 			.addClass(app.el.f, 'o', 6000)
 		
-			.removeClass(app.el.f, 'z', 12000)
-	
-			.removeClass(app.el.f, 'o', 18000)
+			// .removeClass(app.el.f, 'z', 12000)
+			// .removeClass(app.el.f, 'o', 18000)
 
 			// kills removeClass
-			.removeClass.kill(app.el.f, 'o')
+			// .removeClass.kill(app.el.f, 'o')
 		
-			.reset(null, 25000) ;
+			// .reset(null, 25000) ;
 
 
 		//////////////////////////////////////////////////////////////////////////////
 		//	img loading
 		//////////////////////////////////////////////////////////////////////////////
 
-		window.iLoader = iLoader = new app.utils.IMGLoader() ;
+		window.iLoader = iLoader = new u.IMGLoader() ;
 		iLoader.pause() ;
 
 		// iLoader.load(

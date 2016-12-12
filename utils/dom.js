@@ -5,12 +5,91 @@
 
   var utils = app.utils = app.utils || {};
 
+  var MEMORY = (function(){
+
+    var SINGLETON;
+
+    function Memory(){
+
+      var graph={};
+
+      // add to data graph _type, divider, section , group
+      this.add=function(el, group, key, value){
+        //search for element in graph
+        var g = (id = this.find(el)) ?
+              graph[id] :
+              graph[Math.random()] = {
+                ref:el ,
+                data:{}
+                } ;
+
+        (g.data[group] || (g.data[group] = new app.Map)) && g.data[group].add(key, value) ;
+
+        return this ;
+      } ;
+
+
+      this.remove=function(el, group, key, value){
+        var id = this.find(el) ;
+          
+        if(!id) return
+
+        var g = graph[id] ;
+        g.data[group] && g.data[group].remove(key, value) ;
+
+        var counter = 0 ;
+        for(keys in g.data[group]) counter ++
+        if(!counter) delete g.data[group] ;
+        for(groups in g.data) counter ++
+        if(!counter) delete graph[id] ;
+
+        return this ;
+      } ;
+
+
+      this.find=function(el){
+        for (id in graph)
+          if(graph[id].ref == el) return id ;
+        return null ;
+      } ;
+
+
+      this.find2 = function( el, group, key, value ){
+        
+        var entry = null ;
+        for (id in graph) if(graph[id].ref == el ) entry = graph[id] ;
+
+        if ( arguments.length == 1 || !entry ) return entry ;
+        if ( arguments.length == 2 && !!entry.data[group] ) return entry.data[group] ;
+        if ( arguments.length == 3 && !!entry.data[group] && !!entry.data[group][key] ) return entry.data[group][key] ;
+            
+      } ;   
+
+      /*
+       find el entry
+       if it doesn't exist return null
+       if it does aexis  and l = 1 return it
+       i
+      */
+
+      this.g = function() {
+       console.log(graph) ;
+      }
+
+      return SINGLETON || (SINGLETON = this) ;
+
+    };
+
+    return Memory;
+
+  })();
+
+  var memory = utils.memory = new MEMORY ;
+
 
   //////////////////////////////////////////////////////////////////////////////////////////
   // UTILISING A CLASS MAP FOR MEMORY (RESETS IN BANNERS)
   //////////////////////////////////////////////////////////////////////////////////////////
-
-
 
   /* accepts array */
   utils.addClass= function(domEl,value, time){
@@ -27,10 +106,10 @@
            var tm = setTimeout(
             function(){ 
                 app.utils.addClass(el, value);
-                el.addtimers && el.addtimers.remove(value, tm) ;  
+                memory.remove(el, 'addtimers', value, tm)   ; 
                 }
               , time ); 
-            (el.addtimers || (el.addtimers = new app.Map)) && el.addtimers.add(value, tm) ; 
+            memory.add(el, 'addtimers', value, tm) ;
             })();
             return ;   
         }
@@ -52,11 +131,39 @@
       return utils ;
   };
 
+  utils.g = function(){
+    m.g () ;
+  }
   //////////////
   // timer kill
   //////////////  
 
   utils.addClass.kill = function(domEl, value, index){
+
+      // utils.addClass.kill() --> kill all add timeouts on all els
+      // utils.addClass.kill(el) --> kill all add timouts on this el
+      // utils.addClass.kill(el, value) --> kill all add timouts on this el for this class
+      // utils.addClass.kill(el, value, index) --> kill specific timout on this el for this class
+
+      // var add = m.graph[m.find(domEl)].addtimers ;
+
+      // if (!domEl.addtimers[value]) return utils ;
+
+      // function kill(id){
+      //   clearTimeout(id) ;
+      //   memory.remove(domEl, 'addtimers', value, id) ;          
+      // }
+
+      // (index != undefined) ?
+      //   kill(add[value][index]) :
+      //   add[value].concat().forEach(kill)
+      //   ;
+
+      // return utils ;
+
+
+      // m.graph[m.find(domEl)].addtimers[value] ;
+
       if (!domEl.addtimers[value]) return utils ;
 
       function kill(id){
@@ -79,17 +186,17 @@
 
         //////////////
         // timer implementation
-        //////////////  
+        ////////////// 
 
         if(time){
           (function(){
            var tm = setTimeout(
             function(){ 
                 app.utils.removeClass(el, value);
-                el.remtimers && el.remtimers.remove(value, tm) ;  
+                memory.remove(el, 'remtimers', value, tm)   ;  
                 }
               , time ); 
-            (el.remtimers || (el.remtimers = new app.Map)) && el.remtimers.add(value, tm) ; 
+            memory.add(el, 'remtimers', value, tm) ;
             })();
             return ;   
         }
@@ -202,28 +309,5 @@
         }
         return false;
     };
-
-
-  /* VISIBILITY */
-
-  utils.blockvisible = function(el, bool){
-
-    function block(el, bool){
-      (bool)?
-        el.style['display']='block' :
-        el.style['display']='none';
-    }
-
-    if (el instanceof Array){
-      // JS
-      Array.prototype.forEach.call(el,
-        function(e,i,a){
-         block(e, bool)
-        })
-      return;
-    }
-
-    block(el, bool);
-  };
 
 })(window.app || (window.app = {}));
