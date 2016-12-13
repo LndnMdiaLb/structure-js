@@ -218,6 +218,7 @@
 
         var rep = el.className.match(' '+value) ? ' '+value : value ;
         el.className = el.className.replace(rep,'') ;
+        
         // utility to keep track of class manipulation ( ex. banner reset )
         utils.classMap && utils.classMap.remove(value, el) ;        
              
