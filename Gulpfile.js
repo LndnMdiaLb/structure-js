@@ -29,7 +29,7 @@ json.prop
 global.vars = {}
 
 gulp.task('test-compile', function(){
-    return gulp.src(['!./*.js','!_testing/**/*.js','./**/*.js'])
+    return gulp.src(['!./*.js','!node_modules/**/*.js','./**/*.js'])
         .pipe(concat('_testing/struct.js'))
         .pipe(strip({line:true}))
         .pipe(removeLines())
@@ -38,7 +38,7 @@ gulp.task('test-compile', function(){
 
 
 gulp.task('compile', function(){
-    return gulp.src(['!./*.js','!_testing/**/*.js','./**/*.js'])
+    return gulp.src(['!./*.js','!node_modules/**/*.js','./**/*.js'])
         .pipe(concat('structure.js'))
         .pipe(strip({line:true}))
         .pipe(removeLines())
