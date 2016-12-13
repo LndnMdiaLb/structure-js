@@ -5,82 +5,94 @@
 
   var utils = app.utils = app.utils || {};
 
+
+
+
+
   var MEMORY = (function(){
 
     var SINGLETON;
 
     function Memory(){
+      
+      var storage= new app.Set;
 
-      var graph={};
+      // storage entry class - used to be able to easily identify with insatnceof and in console
+      function Entry (element) {
+        this.reference = element ;
+        this.data={} ;
+      }
 
-      // add to data graph _type, divider, section , group
-      this.add=function(el, group, key, value){
-        //search for element in graph
-        var g = (id = this.find(el)) ?
-              graph[id] :
-              graph[Math.random()] = {
-                ref:el ,
-                data:{}
-                } ;
-
-        (g.data[group] || (g.data[group] = new app.Map)) && g.data[group].add(key, value) ;
-
-        return this ;
-      } ;
-
-
-      this.remove=function(el, group, key, value){
-        var id = this.find(el) ;
-          
-        if(!id) return
-
-        var g = graph[id] ;
-        g.data[group] && g.data[group].remove(key, value) ;
-
-        var counter = 0 ;
-        for(keys in g.data[group]) counter ++
-        if(!counter) delete g.data[group] ;
-        for(groups in g.data) counter ++
-        if(!counter) delete graph[id] ;
-
-        return this ;
-      } ;
-
-
-      this.find=function(el){
-        for (id in graph)
-          if(graph[id].ref == el) return id ;
+      // find index of Entry in storage set or return null
+      var searchfor=function(el){   
+        for (var idx = 0; idx<storage.length; idx++)
+          if(storage[idx].reference == el) return idx ;
         return null ;
       } ;
 
+      ///////////
+      // add data to storage Entry _type, key, value => associated to element
+      ///////////
 
-      this.find2 = function( el, group, key, value ){
+      this.add=function(el, type, key, value){
+
+        //search for element in storage
+        var idx = searchfor(el),
+          s = (idx != null) ?
+              // use pre existing
+              storage[idx] :
+              // create new, make association to element and create data 'container', push to storage and return from storage
+              storage[ storage.add (new Entry(el) ).length -1] ;
+
+        // create data type (app.Map class ) or populate pre existing key / value data
+        (s.data[type] || (s.data[type] = new app.Map)) && s.data[type].add(key, value) ;
+
+        return this ;
+      } ;
+
+      ///////////
+      // remove data from storage Entry _type, key, value => associated to element
+      /////////// 
+
+      this.remove=function(el, type, key, value){
+        // find element if element has data associated to it
+        var idx = searchfor(el) ; 
+        if(idx==null) return this // if not return
+        var s = storage[idx] ;
+
+        // remove key / data info from type (app.Map class)
+        arguments.length >=4 && s.data[type] && s.data[type].remove(key, value) ;
+        // nullify whole type group it will be delete in clean up bellow
+        arguments.length ==2 && s.data[type] && (s.data[type] = {}) ;
+        // nullify all data. whole Entry will be deleted in clean up bellow
+        arguments.length ==1 && (s.data = {}) ;
+        // arguments.length ==0 && storage = new Set ;
         
-        var entry = null ;
-        for (id in graph) if(graph[id].ref == el ) entry = graph[id] ;
+        // clean up
+        if(s.data[type] && !Object.keys(s.data[type]).length) delete s.data[type] ;
+        if(!Object.keys(s.data).length) storage.remove(storage[idx]) ;
 
-        if ( arguments.length == 1 || !entry ) return entry ;
-        if ( arguments.length == 2 && !!entry.data[group] ) return entry.data[group] ;
-        if ( arguments.length == 3 && !!entry.data[group] && !!entry.data[group][key] ) return entry.data[group][key] ;
-            
-      } ;   
+        return this ;
+      } ;
 
-      /*
-       find el entry
-       if it doesn't exist return null
-       if it does aexis  and l = 1 return it
-       i
-      */
+      ///////////
+      // expose data associated to element
+      ///////////   
 
-      this.g = function() {
-       console.log(graph) ;
+      this.dataOf=function(el){
+        for (var idx = 0; idx<storage.length; idx++)
+          if(storage[idx].reference == el) return storage[idx].data ;
+        return {} ;
       }
 
-      return SINGLETON || (SINGLETON = this) ;
+      this.g=function(){
+        return storage;
+      }     
 
+      return SINGLETON || (SINGLETON = this)
     };
 
-    return Memory;
+    return Memory ;
 
   })();
 
@@ -92,7 +104,7 @@
   //////////////////////////////////////////////////////////////////////////////////////////
 
   /* accepts array */
-  utils.addClass= function(domEl,value, time){
+  utils.addClass= function(domEl, value, time){
       var has = this.hasClass ;
       function add(el){
         if(has(el, value)) return ;
@@ -119,7 +131,13 @@
         //////////////        
 
         el.className += el.className ? ' ' + value : value ;
+
+        //////////////    
         // utility to keep track of class manipulation ( ex. banner reset )
+        // **** alternative ****
+        // memory memory.add({generalReferenceObject}, 'classMap', value, el) ;
+        //////////////  
+
         (utils.classMap || (utils.classMap = new app.Map)) && utils.classMap.add(value, el) ;       
       } 
 
@@ -132,56 +150,49 @@
   };
 
   utils.g = function(){
-    m.g () ;
+    console.log(memory.g ()) ;
   }
   //////////////
   // timer kill
   //////////////  
 
-  utils.addClass.kill = function(domEl, value, index){
+  utils.addClass.kill = function(domEl, value, id){
 
       // utils.addClass.kill() --> kill all add timeouts on all els
       // utils.addClass.kill(el) --> kill all add timouts on this el
       // utils.addClass.kill(el, value) --> kill all add timouts on this el for this class
-      // utils.addClass.kill(el, value, index) --> kill specific timout on this el for this class
+      // utils.addClass.kill(el, value, id) --> kill specific timout on this el for this class
 
-      // var add = m.graph[m.find(domEl)].addtimers ;
-
-      // if (!domEl.addtimers[value]) return utils ;
-
-      // function kill(id){
-      //   clearTimeout(id) ;
-      //   memory.remove(domEl, 'addtimers', value, id) ;          
-      // }
-
-      // (index != undefined) ?
-      //   kill(add[value][index]) :
-      //   add[value].concat().forEach(kill)
-      //   ;
-
-      // return utils ;
-
-
-      // m.graph[m.find(domEl)].addtimers[value] ;
-
-      if (!domEl.addtimers[value]) return utils ;
+      var data = memory.dataOf(domEl),
+          type = 'addtimers'
+          ;
+      // if it doesn't exist return
+      if(!!data[type] && !!data[type][value]) return utils ;
 
       function kill(id){
         clearTimeout(id) ;
-        domEl.addtimers && domEl.addtimers.remove(value, id) ;          
+        data[type] && memory.remove(domEl, type, value, id) ;            
       }
 
-      (index != undefined) ?
-        kill(domEl.addtimers[value][index]) :
-        domEl.addtimers[value].concat().forEach(kill)
-        ;
+      // ????? how can you know id of timer from outside
+      // arguments.length == 3 && kill(data[type][value][id]) 
+
+      // domEl.addtimers[value].concat() duplicate Set then manipulate original set
+      arguments.length == 2 && data[type][value].concat().forEach(kill) ;
+
+      //  remove all add timers on element
+      if(arguments.length == 1)
+        for (var value in data[type])
+          data[type][value].concat().forEach(kill) ;
+
+      // utils.addClass.kill() --> kill all add timeouts on all els
 
       return utils ;
   }
 
   /* accepts array */
-  utils.removeClass= function(domEl,value, time){
-      var bt = this;
+  utils.removeClass = function(domEl,value, time){
+
       function remove(el,i,arr){
 
         //////////////
@@ -223,17 +234,37 @@
   //////////////  
 
   utils.removeClass.kill = function(domEl, value, index){
-      if (!domEl.remtimers[value]) return utils ;
+
+      // utils.addClass.kill() --> kill all add timeouts on all els
+      // utils.addClass.kill(el) --> kill all add timouts on this el
+      // utils.addClass.kill(el, value) --> kill all add timouts on this el for this class
+      // utils.addClass.kill(el, value, id) --> kill specific timout on this el for this class
+
+      var data = memory.dataOf(domEl),
+          type = 'remtimers'
+          ;
+      // if it doesn't exist return
+
+      if(!data[type] && !data[type][value]) return utils ;
 
       function kill(id){
         clearTimeout(id) ;
-        domEl.remtimers && domEl.remtimers.remove(value, id) ;          
+        data[type] && memory.remove(domEl, type, value, id) ;          
       }
 
-      (index != undefined) ?
-        kill(domEl.remtimers[value][index]) :
-        domEl.remtimers[value].concat().forEach(kill)
-        ;
+      // ????? how can you know id of timer from outside
+      // arguments.length == 3 && kill(data[type][value][id]) 
+
+      // domEl.addtimers[value].concat() duplicate Set then manipulate original set
+      // console.log(data[type][value].concat())
+      arguments.length == 2 && data[type][value].concat().forEach(kill) ;
+
+      //  remove all add timers on element
+      if(arguments.length == 1)
+        for (var value in data[type])
+          data[type][value].concat().forEach(kill) ;
+
+      // utils.removeClass.kill() --> kill all add timeouts on all els
 
       return utils ;
   }  
