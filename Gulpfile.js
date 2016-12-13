@@ -42,7 +42,7 @@ gulp.task('compile', function(){
         .pipe(concat('structure.js'))
         .pipe(strip({line:true}))
         .pipe(removeLines())
-        .pipe(gulp.dest('.'))
+        .pipe(gulp.dest('..'))
 });
 
 
