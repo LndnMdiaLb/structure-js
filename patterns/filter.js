@@ -35,9 +35,9 @@
             // assume default will run
             runfilter._default = true;
             for (var cond in conditionGraph){
+                var c = conditionGraph[cond] ;                
                 // if a default condition (id is default or only has action specified) skip
                 if(cond.toLowerCase()=='default' || !c.condition ) continue ;
-                var c = conditionGraph[cond]
                 if(c.condition.call(this,args)){
                     // do not call default action
                     runfilter._default = false ;
