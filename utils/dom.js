@@ -315,6 +315,27 @@
 
   /* CSS RELATED */
 
+  utils.getPosition = function(el, withscroll) {
+      var xPos = yPos = 0 ;
+      while (el) {
+        function scroll(dir){
+          return (el.tagName == "BODY")?
+            // deal with browser quirks with body/window/document and page scroll
+            el['scroll'+dir] || document.documentElement['scroll'+dir] :
+            el['scroll'+dir] ;
+        }
+        // scroll is expensive and rarely needed
+        xPos += (el.offsetLeft + el.clientLeft - ((withscroll)? scroll('Left'):0 ));
+        yPos += (el.offsetTop + el.clientTop - ((withscroll)? scroll('Top'):0));
+
+        el = el.offsetParent;
+      }
+      return {
+        x: xPos,
+        y: yPos
+      };
+    }  ;
+
   utils.getCompStyle = function(el, prop){
     return window.getComputedStyle(el, null ).getPropertyValue(prop)
   };
