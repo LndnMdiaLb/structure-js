@@ -7,7 +7,7 @@
 
 
         // current usage:
-        
+
         //     immediate
         //         load url
         //             emit global 'event' on completion
@@ -37,12 +37,13 @@
         // fast method to provide access to dispatcher api via composition
         dispatch.augment(this) ;
 
+        // immutable default property
         Object.defineProperty(this, 'DEFAULT', {
             get:function(){
                 return defaultKey ;
             }
         }) ;
-        
+
         // method to block immediate load of images
         this.pause = function(){
             paused = true
@@ -50,27 +51,32 @@
 
         //  load image(s)
         this.load = function(url, callback, emit) {
-
+            // emitted sting on dispatch
             var key = emit || defaultKey
 
             function createimg(url){
                 var im = new Image() ;
+                // add image to Set in Map (at key)
+                // this allows you to partition loads (on different keys passed via emit)
                 loading.add(key, im) ;
+
                 im.onload = function(e) {
+                    // private callback past with each load function
                     if(callback) callback.call(app, e) ;
                     loading.remove(key, this) ;
-                    // if emit string included and 
+                    // if emit string included and
                     if(!loading[key]) dispatch.emit(key) ;
                 };
-
-                (paused) ? 
+                // if paused prior to load methodcall temp store url
+                // should this use utils.memory?
+                (paused) ?
                     im._src = url :
-                    im.src = url ;         
+                    im.src = url ;
             }
 
             (url instanceof Array)?
                 url.forEach(createimg) :
-                createimg(url) 
+                createimg(url)
                 ;
 
             return dispatch ;
@@ -79,15 +85,18 @@
         // remove
         this.start = function(){
 
+            // remove temp stored src and apply to img attribute
             function src (im){
                 im.src = im._src ;
                 delete im._src ;
             }
 
+            // load all images associated to all keys
             if (!arguments.length)
                 for (key in loading)
-                    loading[key].forEach(src)                
+                    loading[key].forEach(src)
 
+            // // load images associated to specific keys
             if (!!arguments.length)
                 Array.prototype.slice.call(arguments)
                     .forEach( function(key){
