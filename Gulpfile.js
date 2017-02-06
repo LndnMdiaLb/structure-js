@@ -29,11 +29,11 @@ json.prop
 global.vars = {}
 
 gulp.task('compile', function(){
-    return gulp.src(['!./*.js','!_testing/**/*.js','./**/*.js'])
+    return gulp.src(['./dev/**/*.js'])
         .pipe(concat('structure.js'))
         .pipe(strip({line:true}))
         .pipe(removeLines())
-        .pipe(gulp.dest('..'))
+        .pipe(gulp.dest('.'))
 });
 
 
