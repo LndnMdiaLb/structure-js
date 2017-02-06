@@ -9,11 +9,16 @@
 	//////////////////////////////
 
 
-	//////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////
 	//  Method Declaration
-	//////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	// 
+	//	Methods for adding and removing objects from arrays
+	//
 	//	THESE DO NOT WORK AS STANDALONE FUNCTIONS
 	//	AND MUST BE ATTACHED TO A OBJ PROPERTY OF THE SAME NAME
+	//
 
 	// add an Array or Element(s)
 	function add(obj){
@@ -23,8 +28,8 @@
 			Array.prototype.push.apply(this, obj) :
 			// convert params to
 			Array.prototype.push.apply(this,
-				Array.prototype.slice.call(arguments));
-			//_stack.concat(Array.prototype.slice.call(arguments)) ;
+				Array.prototype.slice.call(arguments)
+				) ;
 		return this ;
 	}
 
@@ -54,10 +59,8 @@
 		for (var o=0; o<this.length; o++)
 			if (this[o]==obj)
 				this.splice(o, 1) ;
-			    /*  // using indexOf() does not work in < ie9
-			    var idx;
-			    if ( (idx = this.indexOf(obj) ) != -1 ) this.splice(idx, 1) ;
-			    */
+
+		//	recursively remove from stack until array.length == 0
 		if (array.length) return this.remove(array) ;
 		
 		return this ;
@@ -84,54 +87,46 @@
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// ARRAY PROTOTYPE AUGMENTATION
+	// SET & MAP objects
 	//////////////////////////////////////////////////////////////////////////////////////////
 
-	// augmenting Array.prototype - all Arrays will 'inherit' functionality
-
-	function AugmentArray(){
-		Array.prototype.add = add;
-		Array.prototype.addAt = addAt
-		Array.prototype.remove = remove;
-		Array.prototype.removeAt = removeAt;
-	}
+	//
+	// Set augments Array and adds methods for adding and removing objects.
+	//
+	//		 
 
 
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// FACTORY METHOD - AUGMENT AN INSTANCE
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	// factory pattern
-	// decorator pattern ( decorate an array insatnce)
-	// must use Decorator pattern to subclass
-
-
-	// Set or Collection ?
 	var Set = app.Set = function Set(){
 		var _stack =[] ;
-		//////////////
+		
+		// add
 		_stack.add = add;
 		_stack.addAt = addAt;
-		//////////////
+		
+		// remove
 		_stack.remove = remove;
 		_stack.removeAt = removeAt;
-		//////////////
+		
+		//
 		_stack.clear = function(){
 			_stack=[] ;
 		}
+		// factory pattern ?
 		return _stack;
 	};
 
-	//////////////	
-	// Map , Lookup Table or AssociativeMap ?
-	//////////////
+
+	//
+	// Map augments Object and adds methods for adding and removing objects to Sets associated by a name.
+	//
+	//		
 
 	var Map = app.Map = function Map(){
 	    var map={} ;
 	    Object.defineProperties(map, {
 	    	'add':{
 	    		value:function(id, obj) {
-			    	if(id == 'add' || 'remove') ;// ad throw error thingy 'RESEVED'
+			    	if (id == 'add' || 'remove') ;// ad throw error thingy 'RESEVED'
 			    	( map[id] || ( map[id] = new Set ) ) && map[id].add(obj) ;
 			        return this;
 			    }
