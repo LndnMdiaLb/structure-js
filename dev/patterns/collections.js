@@ -13,7 +13,7 @@
 	//  Method Declaration
 	//////////////////////////////////////////////////////////////////////////////////////////
 
-	// 
+	//
 	//	Methods for adding and removing objects from arrays
 	//
 	//	THESE DO NOT WORK AS STANDALONE FUNCTIONS
@@ -62,12 +62,12 @@
 
 		//	recursively remove from stack until array.length == 0
 		if (array.length) return this.remove(array) ;
-		
+
 		return this ;
 	}
 
 	// ???? error - with every recursion array els move so numbers refer to unintented start pos in splice
-	// try this.removeAt.val 
+	// try this.removeAt.val
 
 	function removeAt (idx){
 		var array = (idx instanceof Array) ?
@@ -90,24 +90,24 @@
 	// SET & MAP objects
 	//////////////////////////////////////////////////////////////////////////////////////////
 
-	//
+	//-
 	// Set augments Array and adds methods for adding and removing objects.
-	//
-	//		 
+	//-
+	//-
 
 
 	var Set = app.Set = function Set(){
 		var _stack =[] ;
-		
+
 		// add
 		_stack.add = add;
 		_stack.addAt = addAt;
-		
+
 		// remove
 		_stack.remove = remove;
 		_stack.removeAt = removeAt;
-		
-		//
+
+		// -
 		_stack.clear = function(){
 			_stack=[] ;
 		}
@@ -116,10 +116,10 @@
 	};
 
 
-	//
+	//-
 	// Map augments Object and adds methods for adding and removing objects to Sets associated by a name.
-	//
-	//		
+	//-
+	//-
 
 	var Map = app.Map = function Map(){
 	    var map={} ;
@@ -130,7 +130,7 @@
 			    	( map[id] || ( map[id] = new Set ) ) && map[id].add(obj) ;
 			        return this;
 			    }
-			    , writable: false			    
+			    , writable: false
 			    , enumerable:false
 	    	} ,
 	    	'remove':{
