@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var gulp = require('gulp');
 
 // clean up activities
@@ -25,12 +27,13 @@ var json = JSON.parse(fs.readFileSync('./package.json'));
 json.prop
 
 */
-
+let path = process.argv.length > 2 ?  process.argv[3].substr(2) : 'structure.js' ;
+console.log(path)
 global.vars = {}
 
 gulp.task('compile', function(){
     return gulp.src(['./dev/**/*.js'])
-        .pipe(concat('structure.js'))
+        .pipe(concat(path))
         .pipe(strip({line:true}))
         .pipe(removeLines())
         .pipe(gulp.dest('.'))
